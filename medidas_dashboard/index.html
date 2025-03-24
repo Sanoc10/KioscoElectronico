@@ -1,0 +1,363 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <!-- Refresco automático cada 15 segundos (opcional) -->
+    <meta http-equiv="refresh" content="15" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Kiosco Multiproducto</title>
+
+    <!-- Import jQuery -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <!-- Axios -->
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+    <!-- Bootstrap core CSS -->
+    <link href="assets/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+      .bd-placeholder-img {
+        font-size: 1.125rem;
+        user-select: none;
+      }
+      @media (min-width: 768px) {
+        .bd-placeholder-img-lg {
+          font-size: 3.5rem;
+        }
+      }
+    </style>
+
+    <!-- Custom styles for this template -->
+    <link href="form-validation.css" rel="stylesheet">
+  </head>
+  <body class="bg-light">
+    
+<div class="container">
+  <main>
+    <div class="py-5 text-center">
+      <img class="d-block mx-auto mb-4" src="assets/brand/maquina-de-monedas.png" alt="" width="100" height="100">
+      <h2>Kiosco Multiproducto</h2>
+
+      <!-- Menú desplegable (Dropdown) -->
+      <div class="dropdown" style="margin-top: 20px;">
+        <!-- Cambiamos a 'btn-warning' para un tono naranja -->
+        <button class="btn btn-warning dropdown-toggle" type="button" 
+                id="dropdownMenuButton" data-bs-toggle="dropdown" 
+                aria-expanded="false" style="background-color: orange">
+          Seleccione Maquina
+        </button>
+        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+          <li>
+            <a class="dropdown-item" href="#" 
+               data-api="https://api.thingspeak.com/channels/2127768/fields/1.json?results=1">
+              Maquina 33
+            </a>
+          </li>
+          <li>
+            <a class="dropdown-item" href="#" 
+               data-api="https://api.thingspeak.com/channels/1888455/fields/1.json?results=1">
+              Maquina 44
+            </a>
+          </li>
+          <li>
+            <a class="dropdown-item" href="#" 
+               data-api="https://api.thingspeak.com/channels/2137401/fields/1.json?results=1">
+              Maquina 55
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="row g-5">
+      <div class="col-12" style="border: 1px solid #ccc; padding-bottom: 14px; background-color: #FFF;">
+        <h4 class="mb-3" style="padding-top: 10px">Estados de máquinas</h4>
+
+        <!-- Botón y campo de URL (por si deseas dejarlo para depurar) -->
+        <button class="btn btn-secondary mb-3" id="btnToggleUrl" style="display: none;">
+          Actualizar URL
+        </button>
+
+        <div id="divInputUrl" style="margin-bottom: 1rem;">
+          <label for="thingspeakUrl" class="form-label">URL de Maquina:</label>
+          <input type="text" class="form-control" id="thingspeakUrl" 
+                 value="https://api.thingspeak.com/channels/2127768/fields/1.json?results=1"
+                 readonly>
+        </div>
+        
+        <hr>
+
+        <form class="needs-validation" novalidate>
+          <!-- Número de máquina -->
+          <div class="row g-3">
+            <div class="col-sm-4">
+              <label class="form-label">Máquina *</label>
+            </div>
+            <div class="col-sm-4">
+              <input type="text" class="form-control" id="numeroMaquina" disabled>
+            </div>
+          </div>
+          <hr>
+          <!-- Título para el reporte de Producto -->
+          <div class="row g-3" style="padding-top: 12px;">
+            <div class="col-sm-12 d-flex justify-content-center text-center">
+              <label class="form-label">Cantidad Producto</label>
+            </div>
+          </div>
+          <!-- Sección para Cantidades de 4 Productos (2 dígitos cada uno) -->
+          <div class="row g-3" style="padding-top: 12px;">
+            <div class="col-sm-4">
+              <label class="form-label">Cantidad Producto 1:</label>
+            </div>
+            <div class="col-sm-5">
+              <div class="progress">
+                <div class="progress-bar" id="progress_prod1" style="width: 0%">0%</div>
+              </div>
+            </div>
+            <div class="col-sm-3">
+              <label id="valor_prod1" class="form-label"></label>
+            </div>
+          </div>
+          <div class="row g-3" style="padding-top: 12px;">
+            <div class="col-sm-4">
+              <label class="form-label">Cantidad Producto 2:</label>
+            </div>
+            <div class="col-sm-5">
+              <div class="progress">
+                <div class="progress-bar" id="progress_prod2" style="width: 0%">0%</div>
+              </div>
+            </div>
+            <div class="col-sm-3">
+              <label id="valor_prod2" class="form-label"></label>
+            </div>
+          </div>
+          <div class="row g-3" style="padding-top: 12px;">
+            <div class="col-sm-4">
+              <label class="form-label">Cantidad Producto 3:</label>
+            </div>
+            <div class="col-sm-5">
+              <div class="progress">
+                <div class="progress-bar" id="progress_prod3" style="width: 0%">0%</div>
+              </div>
+            </div>
+            <div class="col-sm-3">
+              <label id="valor_prod3" class="form-label"></label>
+            </div>
+          </div>
+          <div class="row g-3" style="padding-top: 12px;">
+            <div class="col-sm-4">
+              <label class="form-label">Cantidad Producto 4:</label>
+            </div>
+            <div class="col-sm-5">
+              <div class="progress">
+                <div class="progress-bar" id="progress_prod4" style="width: 0%">0%</div>
+              </div>
+            </div>
+            <div class="col-sm-3">
+              <label id="valor_prod4" class="form-label"></label>
+            </div>
+          </div>
+          <hr>
+
+          <!-- Título para el reporte de Monedas -->
+          <div class="row g-3" style="padding-top: 12px;">
+            <div class="col-sm-12 d-flex justify-content-center text-center">
+              <label class="form-label">Reporte Conteo Monedas</label>
+            </div>
+          </div>
+
+          <!-- Monedas 0.05 -->
+          <div class="row g-3" style="padding-top: 12px;">
+            <div class="col-sm-4">
+              <label class="form-label">Cantidad Monedas 5 ctvs:</label>
+            </div>
+            <div class="col-sm-5">
+              <div class="progress">
+                <div class="progress-bar bg-success" id="progress_5" style="width: 0%">0%</div>
+              </div>
+            </div>
+            <div class="col-sm-3">
+              <label id="cantidad5Valor" class="form-label"></label>
+            </div>
+          </div>
+          <!-- Monedas 0.10 -->
+          <div class="row g-3" style="padding-top: 12px;">
+            <div class="col-sm-4">
+              <label class="form-label">Cantidad Monedas 10 ctvs:</label>
+            </div>
+            <div class="col-sm-5">
+              <div class="progress">
+                <div class="progress-bar bg-info" id="progress_10" style="width: 0%">0%</div>
+              </div>
+            </div>
+            <div class="col-sm-3">
+              <label id="cantidad10Valor" class="form-label"></label>
+            </div>
+          </div>
+          <!-- Monedas 0.25 -->
+          <div class="row g-3" style="padding-top: 12px;">
+            <div class="col-sm-4">
+              <label class="form-label">Cantidad Monedas 25 ctvs:</label>
+            </div>
+            <div class="col-sm-5">
+              <div class="progress">
+                <div class="progress-bar bg-warning" id="progress_25" style="width: 0%">0%</div>
+              </div>
+            </div>
+            <div class="col-sm-3">
+              <label id="cantidad25Valor" class="form-label"></label>
+            </div>
+          </div>
+          
+          <hr>
+
+          <!-- Sección de Total Venta (se mantiene) -->
+          <div class="row g-3" style="padding-top: 14px;">
+            <div class="col-sm-4">
+              <label for="totalVentaTexto" class="form-label">Total Venta</label>
+            </div>
+            <div class="col-sm-1 d-flex justify-content-center text-left">
+              <label style="font-size: 20px; padding-left: 30px; padding-top: 4px;">$</label>
+            </div>
+            <div class="col-sm-4">
+              <input type="text" class="form-control" id="totalVenta" value="0.00" disabled>
+            </div>
+          </div>
+
+          <hr>
+
+          <!-- Hora -->
+          <div class="row g-3">
+            <div class="col-sm-4">
+              <label for="horaTexto" class="form-label">Hora: </label>
+            </div>
+            <div class="col-sm-6">
+              <input type="text" class="form-control" id="hora" value="00:00:00" disabled>
+            </div>
+          </div>
+
+        </form>
+      </div>
+    </div>
+  </main>
+
+  <footer class="my-5 pt-5 text-muted text-center text-small">
+    <p class="mb-1">&copy; 2025 By Sanoc</p>
+  </footer>
+</div>
+
+<!-- Bootstrap Bundle (incluye Popper) para dropdowns y otros componentes -->
+<script src="assets/dist/js/bootstrap.bundle.min.js"></script>
+<script src="form-validation.js"></script>
+
+<script>
+  // Cuando el DOM esté listo
+  $(document).ready(function () {
+    console.log("DOM loaded!");
+
+    // 1) Llamada inicial con la URL por defecto
+    getData($("#thingspeakUrl").val());
+
+    // 2) Al hacer clic en cada opción del menú:
+    $(".dropdown-item").click(function(e){
+      e.preventDefault();
+      let newUrl = $(this).data("api"); 
+      console.log("API seleccionada:", newUrl);
+
+      // Actualizamos el cuadro de texto con la nueva URL
+      $("#thingspeakUrl").val(newUrl);
+
+      // Llamamos a getData con la nueva URL
+      getData(newUrl);
+    });
+  });
+
+  // Función para obtener los datos desde la URL especificada
+  function getData(url){
+    axios.get(url)
+      .then(function (response) {
+        console.log("Respuesta axios:", response);
+
+        // feeds[0] = último registro
+        const valores = response.data.feeds[0];
+        if(!valores || !valores.field1) {
+          console.log("No hay datos en 'field1'");
+          return;
+        }
+
+        // Convertimos a string para usar substring
+        // Ojo: JSON.stringify agrega comillas al inicio y fin, 
+        // así que tus índices deben ajustarse a ese formato.
+        const fieldStr = JSON.stringify(valores.field1);
+        console.log("field1 completo:", fieldStr);
+
+        // 1. Número de máquina (2 dígitos) => substring(2,4)
+        const maquina = fieldStr.substring(2,4);
+        document.getElementById('numeroMaquina').value = maquina;
+
+        // 2. Cantidades de 4 productos (cada uno 2 dígitos)
+        const prod1 = parseInt(fieldStr.substring(5,7));
+        const prod2 = parseInt(fieldStr.substring(8,10));
+        const prod3 = parseInt(fieldStr.substring(11,13));
+        const prod4 = parseInt(fieldStr.substring(14,16));
+
+        // Actualizamos barras de progreso (ejemplo: base 25, ajústalo a tu necesidad)
+        updateProgressBar('progress_prod1','valor_prod1', prod1, 25);
+        updateProgressBar('progress_prod2','valor_prod2', prod2, 25);
+        updateProgressBar('progress_prod3','valor_prod3', prod3, 25);
+        updateProgressBar('progress_prod4','valor_prod4', prod4, 25);
+
+        // 3. Monedas de 0.05, 0.10 y 0.25 (3 dígitos cada uno)
+        const monedas5  = parseInt(fieldStr.substring(17,20));
+        const monedas10 = parseInt(fieldStr.substring(21,24));
+        const monedas25 = parseInt(fieldStr.substring(25,28));
+
+        updateProgressBar('progress_5','cantidad5Valor',  monedas5,  255);
+        updateProgressBar('progress_10','cantidad10Valor', monedas10, 255);
+        updateProgressBar('progress_25','cantidad25Valor', monedas25, 255);
+
+        // 4. Total Venta (5 dígitos). EJEMPLO: multiplicar por 0.01
+        //    Indices del 29 al 34 => substring(29,34)
+        const ventas = parseFloat(fieldStr.substring(29,34));
+        const ventasTotal = ventas * 0.01;
+        document.getElementById('totalVenta').value = ventasTotal.toFixed(2);
+
+        // 5. Fecha y hora
+        const fecha = valores.created_at; 
+        const mydate = new Date(fecha);
+        document.getElementById('hora').value = 
+          mydate.toLocaleDateString() + ' ' + mydate.toLocaleTimeString();
+
+      })
+      .catch(function (error) {
+        console.log("Error en la petición:", error);
+      });
+  }
+
+  // Función para actualizar barras de progreso
+  function updateProgressBar(barId, labelId, value, maxValue){
+    const pct = (value * 100) / maxValue;
+    const bar = document.getElementById(barId);
+    const label = document.getElementById(labelId);
+
+    // Ancho de la barra según porcentaje
+    bar.style.width = pct + '%';
+
+    // Limpiamos cualquier texto dentro de la barra (opcional)
+    bar.textContent = '';
+
+    // Mostramos la cantidad de unidades a la derecha
+    label.textContent = value + ' Unidades';
+
+    // Si el id de la barra es de producto (progress_prodX) y el valor es < 6, pintamos de rojo
+    if (barId.includes('prod') && value < 3) {
+      bar.classList.add('bg-danger');
+    } else {
+      bar.classList.remove('bg-danger');
+    }
+  }
+</script>
+
+</body>
+</html>
